@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { calculateDepositComparison } from "../domain/depositCalculator";
 import { addComma, removeComma } from "../utils/validator";
@@ -25,11 +25,25 @@ const initialInputs = {
   switchingCost: "0",
 };
 
+const ERROR_FIELD_ORDER = [
+  "amount",
+  "oldStartDate",
+  "oldMaturityDate",
+  "oldInterest",
+  "earlyTerminationInterest",
+  "oldTax",
+  "switchDate",
+  "newInterest",
+  "newTax",
+  "switchingCost",
+];
+
 const FieldError = ({ children }) =>
   children ? <span className="field-error">{children}</span> : null;
 
 export default function Calculator() {
   const navigate = useNavigate();
+  const formRef = useRef(null);
   const [inputs, setInputs] = useState(initialInputs);
   const [errors, setErrors] = useState({});
 
@@ -61,6 +75,20 @@ export default function Calculator() {
 
     if (Object.keys(result.errors).length > 0) {
       setErrors(result.errors);
+      const firstErrorField = ERROR_FIELD_ORDER.find(
+        (field) => result.errors[field]
+      );
+
+      window.requestAnimationFrame(() => {
+        const element = formRef.current?.elements.namedItem(firstErrorField);
+        if (!element) return;
+
+        element.scrollIntoView?.({
+          behavior: "smooth",
+          block: "center",
+        });
+        element.focus({ preventScroll: true });
+      });
       return;
     }
 
@@ -81,7 +109,12 @@ export default function Calculator() {
         <div className="privacy-note">입력하신 정보는 외부로 전송되지 않습니다.</div>
       </header>
 
-      <form className="calculator-form" onSubmit={handleSubmit} noValidate>
+      <form
+        className="calculator-form"
+        noValidate
+        onSubmit={handleSubmit}
+        ref={formRef}
+      >
         <section className="form-section form-section--wide">
           <div className="section-heading">
             <span>01</span>

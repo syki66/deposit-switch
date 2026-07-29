@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useLayoutEffect, useState } from "react";
 import { Navigate, useLocation, useNavigate } from "react-router-dom";
 import { calculateDepositComparison } from "../domain/depositCalculator";
 import {
@@ -39,6 +39,14 @@ export default function Result() {
   const sharedInputs = readInputsFromShareHash(location.hash);
   const inputs = sharedInputs || readStoredJson("depositInputs");
   const result = inputs ? calculateDepositComparison(inputs) : null;
+
+  useLayoutEffect(() => {
+    window.scrollTo({
+      top: 0,
+      left: 0,
+      behavior: "auto",
+    });
+  }, []);
 
   if (
     !inputs ||
