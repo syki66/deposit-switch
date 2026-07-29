@@ -420,9 +420,33 @@ button {
   margin-top: 8px;
 }
 
+.share-box {
+  margin-top: 24px;
+  padding: 30px;
+  border: 3px solid var(--navy);
+  border-radius: 16px;
+  background: var(--blue-light);
+}
+
+.share-box h2 {
+  margin: 0;
+  color: var(--navy-dark);
+  font-size: 1.45rem;
+  font-weight: 900;
+}
+
+.share-box > p {
+  margin: 14px 0 0;
+  color: var(--muted);
+  font-size: 0.98rem;
+  line-height: 1.75;
+}
+
 .result-actions {
   display: flex;
-  justify-content: flex-end;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  gap: 12px;
   margin-top: 24px;
 }
 
@@ -434,6 +458,23 @@ button {
 
 .result-actions button:hover {
   background: var(--navy-dark);
+}
+
+.result-actions .share-button {
+  border-color: var(--yellow-dark);
+  background: var(--yellow);
+  color: var(--navy-dark);
+}
+
+.result-actions .share-button:hover {
+  background: var(--yellow-dark);
+}
+
+.share-box .share-status {
+  min-height: 1.6em;
+  margin-top: 14px;
+  color: var(--success);
+  font-weight: 800;
 }
 
 @media (max-width: 760px) {
@@ -450,6 +491,7 @@ button {
   .form-section,
   .result-card,
   .assumption-box,
+  .share-box,
   .result-hero {
     padding: 22px 18px;
     border-radius: 12px;

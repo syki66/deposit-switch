@@ -1,5 +1,10 @@
-import React from "react";
-import { Navigate, useNavigate } from "react-router-dom";
+import React, { useState } from "react";
+import { Navigate, useLocation, useNavigate } from "react-router-dom";
+import { calculateDepositComparison } from "../domain/depositCalculator";
+import {
+  createShareUrl,
+  readInputsFromShareHash,
+} from "../utils/shareUrl";
 import { formatWon } from "../utils/validator";
 
 const readStoredJson = (key) => {
@@ -29,12 +34,64 @@ const InterestBreakdown = ({ data }) => (
 
 export default function Result() {
   const navigate = useNavigate();
-  const inputs = readStoredJson("depositInputs");
-  const result = readStoredJson("depositResult");
+  const location = useLocation();
+  const [shareStatus, setShareStatus] = useState("");
+  const sharedInputs = readInputsFromShareHash(location.hash);
+  const inputs = sharedInputs || readStoredJson("depositInputs");
+  const result = inputs ? calculateDepositComparison(inputs) : null;
 
-  if (!inputs || !result || !result.keep || !result.switch) {
+  if (
+    !inputs ||
+    !result ||
+    Object.keys(result.errors).length > 0 ||
+    !result.keep ||
+    !result.switch
+  ) {
     return <Navigate replace to="/" />;
   }
+
+  const shareUrl = createShareUrl(inputs);
+
+  const copyShareUrl = () => {
+    const textarea = document.createElement("textarea");
+    textarea.value = shareUrl;
+    textarea.setAttribute("readonly", "");
+    textarea.style.position = "fixed";
+    textarea.style.opacity = "0";
+    document.body.appendChild(textarea);
+    textarea.select();
+    const copied = document.execCommand("copy");
+    document.body.removeChild(textarea);
+    return copied;
+  };
+
+  const handleShare = async () => {
+    setShareStatus("");
+
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          url: shareUrl,
+        });
+        return;
+      } catch (error) {
+        if (error.name === "AbortError") return;
+      }
+    }
+
+    try {
+      if (navigator.clipboard?.writeText) {
+        await navigator.clipboard.writeText(shareUrl);
+      } else if (!copyShareUrl()) {
+        throw new Error("copy failed");
+      }
+      setShareStatus("공유 링크를 복사했습니다.");
+    } catch {
+      setShareStatus(
+        "링크를 복사하지 못했습니다. 주소창의 주소를 직접 복사해주세요."
+      );
+    }
+  };
 
   const difference = Math.abs(result.difference);
   const messages = {
@@ -140,11 +197,29 @@ export default function Result() {
         </ul>
       </section>
 
-      <div className="result-actions">
-        <button onClick={() => navigate("/")} type="button">
-          입력값 다시 계산하기
-        </button>
-      </div>
+      <section className="share-box">
+        <h2>이 결과를 다른 사람에게 보내기</h2>
+        <p>
+          공유 링크를 받은 사람은 같은 계산 결과를 바로 확인할 수 있습니다.
+          링크에는 입력한 금액과 날짜가 포함되므로 믿을 수 있는 사람에게만
+          보내주세요.
+        </p>
+        <div className="result-actions">
+          <button
+            className="share-button"
+            onClick={handleShare}
+            type="button"
+          >
+            결과 공유하기
+          </button>
+          <button onClick={() => navigate("/")} type="button">
+            입력값 다시 계산하기
+          </button>
+        </div>
+        <p aria-live="polite" className="share-status" role="status">
+          {shareStatus}
+        </p>
+      </section>
     </main>
   );
 }

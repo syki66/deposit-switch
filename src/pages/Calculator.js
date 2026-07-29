@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { calculateDepositComparison } from "../domain/depositCalculator";
 import { addComma, removeComma } from "../utils/validator";
+import { createShareHash } from "../utils/shareUrl";
 
 const getToday = () => {
   const today = new Date();
@@ -65,7 +66,7 @@ export default function Calculator() {
 
     sessionStorage.setItem("depositInputs", JSON.stringify(inputs));
     sessionStorage.setItem("depositResult", JSON.stringify(result));
-    navigate("/result");
+    navigate({ pathname: "/", hash: createShareHash(inputs) });
   };
 
   return (
