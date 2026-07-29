@@ -1,3 +1,9 @@
+jest.mock(
+  "@vercel/analytics/react",
+  () => ({ Analytics: () => null }),
+  { virtual: true }
+);
+
 import { render, screen } from "@testing-library/react";
 import App from "./App";
 import { createShareHash } from "./utils/shareUrl";

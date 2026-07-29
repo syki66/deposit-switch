@@ -1,3 +1,4 @@
+import { Analytics } from "@vercel/analytics/react";
 import {
   BrowserRouter,
   Route,
@@ -14,6 +15,11 @@ function Home() {
   return readInputsFromShareHash(location.hash) ? <Result /> : <Calculator />;
 }
 
+const removeSharedInputs = (event) => ({
+  ...event,
+  url: event.url.split("#")[0],
+});
+
 function App() {
   return (
     <BrowserRouter>
@@ -21,6 +27,7 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/result" element={<Result />} />
       </Routes>
+      <Analytics beforeSend={removeSharedInputs} />
     </BrowserRouter>
   );
 }
