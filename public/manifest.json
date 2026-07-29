@@ -1,25 +1,26 @@
 {
   "short_name": "예금갈아탈까",
   "name": "예금갈아탈까 - 예금 갈아타기 계산기",
+  "description": "기존 예금 유지와 새 예금 갈아타기의 예상 세후 이자를 비교하는 계산기",
+  "id": "/",
+  "start_url": "/",
+  "scope": "/",
+  "lang": "ko-KR",
+  "categories": ["finance", "utilities"],
   "icons": [
     {
-      "src": "favicon.ico",
-      "sizes": "64x64 32x32 24x24 16x16",
-      "type": "image/x-icon"
+      "src": "icon-192.png",
+      "type": "image/png",
+      "sizes": "192x192",
+      "purpose": "any"
     },
     {
-      "src": "logo192.png",
+      "src": "icon-512.png",
       "type": "image/png",
-      "sizes": "192x192"
-    },
-    {
-      "src": "logo512.png",
-      "type": "image/png",
-      "sizes": "512x512"
+      "sizes": "512x512",
+      "purpose": "any"
     }
   ],
-  "start_url": ".",
-  "orientation": "portrait",
   "display": "standalone",
   "theme_color": "#15365f",
   "background_color": "#f2f5f8"
