@@ -1,4 +1,4 @@
-# re-deposit-calculator
+# deposit-switch
 
 기존예금을 지속하는 것과 해지 후 재 예금하는 것 중 어느것이 이득일지 계산해주는 툴
 

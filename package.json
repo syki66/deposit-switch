@@ -1,5 +1,5 @@
 {
-  "name": "re-deposit-calculator",
+  "name": "deposit-switch",
   "version": "0.1.0",
   "private": true,
   "dependencies": {

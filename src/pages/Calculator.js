@@ -71,12 +71,13 @@ export default function Calculator() {
   return (
     <main className="page-shell">
       <header className="page-header">
-        <p className="eyebrow">DEPOSIT SWITCH CALCULATOR</p>
-        <h1>예금 갈아타기 계산기</h1>
+        <p className="eyebrow">쉽고 정확한 예금 이자 비교</p>
+        <h1>예금, 갈아타는 게 이득일까요?</h1>
         <p>
-          기존 예금을 만기까지 유지할 때와 지금 해지해 새 예금으로
-          옮길 때의 세후 이자를 같은 만기일 기준으로 비교합니다.
+          기존 예금을 그대로 둘 때와 새 예금으로 옮길 때를 비교해드립니다.
+          아래 내용을 위에서부터 차례대로 입력하세요.
         </p>
+        <div className="privacy-note">입력하신 정보는 외부로 전송되지 않습니다.</div>
       </header>
 
       <form className="calculator-form" onSubmit={handleSubmit} noValidate>
@@ -84,14 +85,14 @@ export default function Calculator() {
           <div className="section-heading">
             <span>01</span>
             <div>
-              <h2>비교 기준</h2>
-              <p>원금과 실제로 갈아탈 날짜를 입력해주세요.</p>
+              <h2>비교할 금액</h2>
+              <p>현재 기존 예금에 넣어둔 원금을 입력하세요.</p>
             </div>
           </div>
 
-          <div className="field-grid field-grid--two">
+          <div className="field-grid field-grid--single">
             <label className="field">
-              <span>예치 원금</span>
+              <span>예치 원금 <em>필수</em></span>
               <div className="input-with-unit">
                 <input
                   aria-invalid={Boolean(errors.amount)}
@@ -103,21 +104,8 @@ export default function Calculator() {
                 />
                 <b>원</b>
               </div>
+              <small className="field-help">예: 천만 원이면 10,000,000 입력</small>
               <FieldError>{errors.amount}</FieldError>
-            </label>
-
-            <label className="field">
-              <span>갈아타는 날짜</span>
-              <input
-                aria-invalid={Boolean(errors.switchDate)}
-                name="switchDate"
-                onChange={(event) =>
-                  updateInput(event.target.name, event.target.value)
-                }
-                type="date"
-                value={inputs.switchDate}
-              />
-              <FieldError>{errors.switchDate}</FieldError>
             </label>
           </div>
         </section>
@@ -126,14 +114,14 @@ export default function Calculator() {
           <div className="section-heading">
             <span>02</span>
             <div>
-              <h2>기존 예금</h2>
-              <p>은행에서 안내받은 중도해지 적용 금리를 입력하세요.</p>
+              <h2>기존 예금 정보</h2>
+              <p>현재 가입되어 있는 예금의 내용을 입력하세요.</p>
             </div>
           </div>
 
           <div className="field-grid">
             <label className="field">
-              <span>가입일</span>
+              <span>가입한 날짜 <em>필수</em></span>
               <input
                 aria-invalid={Boolean(errors.oldStartDate)}
                 name="oldStartDate"
@@ -147,7 +135,7 @@ export default function Calculator() {
             </label>
 
             <label className="field">
-              <span>만기일</span>
+              <span>만기 날짜 <em>필수</em></span>
               <input
                 aria-invalid={Boolean(errors.oldMaturityDate)}
                 name="oldMaturityDate"
@@ -161,7 +149,7 @@ export default function Calculator() {
             </label>
 
             <label className="field">
-              <span>약정 금리</span>
+              <span>약정 금리 <em>필수</em></span>
               <div className="input-with-unit">
                 <input
                   aria-invalid={Boolean(errors.oldInterest)}
@@ -188,6 +176,9 @@ export default function Calculator() {
                 />
                 <b>%</b>
               </div>
+              <small className="field-help">
+                모르면 은행 앱이나 고객센터에서 확인하세요.
+              </small>
               <FieldError>{errors.earlyTerminationInterest}</FieldError>
             </label>
 
@@ -212,14 +203,31 @@ export default function Calculator() {
           <div className="section-heading">
             <span>03</span>
             <div>
-              <h2>새 예금</h2>
-              <p>새 예금은 기존 만기일까지 운용하는 것으로 계산합니다.</p>
+              <h2>새 예금 정보</h2>
+              <p>새로 가입하려는 예금의 내용을 입력하세요.</p>
             </div>
           </div>
 
           <div className="field-grid">
+            <label className="field field--wide">
+              <span>새 예금 가입 예정일 <em>필수</em></span>
+              <input
+                aria-invalid={Boolean(errors.switchDate)}
+                name="switchDate"
+                onChange={(event) =>
+                  updateInput(event.target.name, event.target.value)
+                }
+                type="date"
+                value={inputs.switchDate}
+              />
+              <small className="field-help">
+                기존 예금을 해지하고 새 예금에 가입할 날짜입니다.
+              </small>
+              <FieldError>{errors.switchDate}</FieldError>
+            </label>
+
             <label className="field">
-              <span>새 예금 금리</span>
+              <span>새 예금 금리 <em>필수</em></span>
               <div className="input-with-unit">
                 <input
                   aria-invalid={Boolean(errors.newInterest)}
@@ -268,10 +276,10 @@ export default function Calculator() {
 
         <div className="submit-area">
           <p>
-            단리·연 365일 기준이며, 중도해지 우대금리와 상품별 특약은 직접
-            확인해야 합니다.
+            새 예금 이자는 가입 예정일부터 기존 예금 만기일까지 계산합니다.
+            실제 수령액은 은행 규정에 따라 달라질 수 있습니다.
           </p>
-          <button type="submit">두 선택 비교하기</button>
+          <button type="submit">계산 결과 크게 보기</button>
         </div>
       </form>
     </main>
