@@ -35,6 +35,71 @@ button {
   cursor: pointer;
 }
 
+.site-header {
+  border-bottom: 2px solid #bdc8d3;
+  background: var(--white);
+}
+
+.site-header__inner {
+  display: flex;
+  width: min(960px, calc(100% - 32px));
+  min-height: 76px;
+  margin: 0 auto;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.site-header__brand {
+  color: var(--navy-dark);
+  font-size: 1.35rem;
+  font-weight: 900;
+  letter-spacing: -0.035em;
+  text-decoration: none;
+}
+
+.site-header__brand:hover {
+  color: var(--navy);
+}
+
+.site-header__brand:focus-visible {
+  border-radius: 6px;
+  outline: 3px solid var(--yellow-dark);
+  outline-offset: 5px;
+}
+
+.site-header__products {
+  padding: 10px 16px;
+  border: 2px solid var(--navy);
+  border-radius: 9px;
+  background: var(--navy);
+  color: var(--white);
+  font-size: 0.9rem;
+  font-weight: 800;
+  text-decoration: none;
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease;
+}
+
+.site-header__products:hover {
+  border-color: var(--navy-dark);
+  background: var(--navy-dark);
+}
+
+.site-header__products:focus-visible {
+  outline: 3px solid var(--yellow-dark);
+  outline-offset: 3px;
+}
+
+.ad-banner {
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  overflow: hidden;
+  padding: 16px 0;
+}
+
 .page-shell {
   width: min(960px, calc(100% - 32px));
   margin: 0 auto;
@@ -494,9 +559,38 @@ button {
   font-weight: 800;
 }
 
+.site-footer {
+  width: min(100% - 32px, 960px);
+  margin: 0 auto;
+  padding: 28px 0 36px;
+  border-top: 2px solid #bdc8d3;
+  color: var(--muted);
+  text-align: center;
+  font-size: 0.95rem;
+  line-height: 1.7;
+}
+
+.site-footer p {
+  margin: 0;
+}
+
 @media (max-width: 760px) {
   html {
     font-size: 17px;
+  }
+
+  .site-header__inner {
+    width: min(100% - 20px, 960px);
+    min-height: 68px;
+  }
+
+  .site-header__brand {
+    font-size: 1.25rem;
+  }
+
+  .site-header__products {
+    padding: 9px 12px;
+    font-size: 0.86rem;
   }
 
   .page-shell {
@@ -567,5 +661,10 @@ button {
 
   .result-row {
     align-items: flex-start;
+  }
+
+  .site-footer {
+    width: min(100% - 20px, 960px);
+    padding: 24px 10px 30px;
   }
 }

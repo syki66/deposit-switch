@@ -1,6 +1,6 @@
 # deposit-switch
 
-**예금갈아탈까**는 기존 예금을 만기까지 유지할 때와 중도해지 후 새
+**예금 갈아탈까?**는 기존 예금을 만기까지 유지할 때와 중도해지 후 새
 예금으로 갈아탈 때의 예상 세후 이자를 비교하는 계산기입니다.
 
 - 서비스 주소: [https://deposit-switch.vercel.app/](https://https://deposit-switch.vercel.app/)

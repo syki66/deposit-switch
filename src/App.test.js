@@ -14,13 +14,27 @@ beforeEach(() => {
 });
 
 test("예금 비교 입력 화면을 표시한다", () => {
-  render(<App />);
+  const { container } = render(<App />);
 
+  const homeLink = screen.getByRole("link", { name: "예금 갈아탈까?" });
+  const adBanner = screen.getByLabelText("광고");
+  const calculateButton = screen.getByRole("button", {
+    name: "계산 결과 크게 보기",
+  });
+
+  expect(homeLink).toBeInTheDocument();
+  expect(
+    container.querySelector(".site-header").nextElementSibling
+  ).toBe(adBanner);
+  expect(
+    screen.getByRole("link", { name: "다른 제품 보러가기" })
+  ).toHaveAttribute("href", "https://pokugi.com");
   expect(
     screen.getByRole("heading", { name: "예금, 갈아타는 게 이득일까요?" })
   ).toBeInTheDocument();
+  expect(calculateButton).toBeInTheDocument();
   expect(
-    screen.getByRole("button", { name: "계산 결과 크게 보기" })
+    screen.getByText("© 2026 Pokugi Studio. All rights reserved.")
   ).toBeInTheDocument();
 });
 
