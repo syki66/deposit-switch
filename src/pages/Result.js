@@ -120,6 +120,8 @@ export default function Result() {
     },
   };
   const message = messages[result.recommendation];
+  const interestTypeLabel =
+    result.assumptions.interestType === "compound" ? "월복리" : "단리";
 
   return (
     <main className="page-shell">
@@ -129,6 +131,7 @@ export default function Result() {
         <p className="result-difference">{message.difference}</p>
         <div className="result-period">
           <span>비교 원금 {formatWon(Number(inputs.amount))}</span>
+          <span>이자 계산 {interestTypeLabel}</span>
           <span>
             {inputs.switchDate}부터 {inputs.oldMaturityDate}까지{" "}
             {result.assumptions.remainingDays}일
@@ -142,7 +145,8 @@ export default function Result() {
             <span>선택 A</span>
             <h2>기존 예금 유지</h2>
             <p>
-              연 {inputs.oldInterest}%로 총 {result.assumptions.fullDays}일
+              연 {inputs.oldInterest}% · {interestTypeLabel} · 총{" "}
+              {result.assumptions.fullDays}일
             </p>
           </div>
           <InterestBreakdown data={result.keep} />
@@ -158,7 +162,7 @@ export default function Result() {
           <div className="result-subsection">
             <h3>기존 예금 중도해지</h3>
             <p>
-              연 {inputs.earlyTerminationInterest}% ·{" "}
+              연 {inputs.earlyTerminationInterest}% · {interestTypeLabel} ·{" "}
               {result.assumptions.elapsedDays}일
             </p>
             <InterestBreakdown data={result.switch.earlyTermination} />
@@ -167,7 +171,8 @@ export default function Result() {
           <div className="result-subsection">
             <h3>새 예금 운용</h3>
             <p>
-              연 {inputs.newInterest}% · {result.assumptions.remainingDays}일
+              연 {inputs.newInterest}% · {interestTypeLabel} ·{" "}
+              {result.assumptions.remainingDays}일
             </p>
             <InterestBreakdown data={result.switch.newDeposit} />
           </div>
@@ -187,9 +192,15 @@ export default function Result() {
         <h2>계산 기준</h2>
         <ul>
           <li>
-            모든 이자는 단리·연 365일 기준으로 계산하고 원 단위로
-            반올림했습니다.
+            모든 이자는 {interestTypeLabel}·연 365일 기준으로 계산하고 원
+            단위로 반올림했습니다.
           </li>
+          {result.assumptions.interestType === "compound" && (
+            <li>
+              복리는 연 금리를 12개월로 나눈 월 이율로 계산하며, 발생한
+              이자를 원금에 더해 다음 달 이자를 계산했습니다.
+            </li>
+          )}
           <li>
             새 예금은 기존 예금 만기일까지 원금 {formatWon(inputs.amount)}을
             운용하는 것으로 가정했습니다.

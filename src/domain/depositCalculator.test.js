@@ -1,11 +1,13 @@
 import {
   calculateDepositComparison,
+  calculateInterest,
   getDaysBetween,
   validateInputs,
 } from "./depositCalculator";
 
 const validInputs = {
   amount: "10000000",
+  interestType: "simple",
   oldStartDate: "2024-01-01",
   switchDate: "2024-07-01",
   oldMaturityDate: "2025-01-01",
@@ -27,6 +29,8 @@ test("유지와 갈아타기의 세후 이자를 같은 만기일 기준으로 �
   expect(result.errors).toEqual({});
   expect(result.assumptions).toEqual({
     dayCountBasis: 365,
+    compoundingPeriodsPerYear: null,
+    interestType: "simple",
     fullDays: 366,
     elapsedDays: 182,
     remainingDays: 184,
@@ -36,6 +40,38 @@ test("유지와 갈아타기의 세후 이자를 같은 만기일 기준으로 �
   expect(result.switch.newDeposit.netInterest).toBeCloseTo(255886.03, 2);
   expect(result.recommendation).toBe("switch");
   expect(result.difference).toBeCloseTo(43574.79, 2);
+});
+
+test("월복리는 매월 발생한 이자를 원금에 더해 계산한다", () => {
+  const result = calculateInterest({
+    principal: 10000000,
+    annualRate: 12,
+    taxRate: 0,
+    days: 365,
+    interestType: "compound",
+  });
+
+  expect(result.grossInterest).toBeCloseTo(
+    10000000 * (Math.pow(1.01, 12) - 1),
+    6
+  );
+  expect(result.grossInterest).toBeGreaterThan(1200000);
+});
+
+test("복리를 선택하면 유지와 갈아타기 모두 월복리를 적용한다", () => {
+  const result = calculateDepositComparison({
+    ...validInputs,
+    interestType: "compound",
+  });
+
+  expect(result.assumptions.interestType).toBe("compound");
+  expect(result.assumptions.compoundingPeriodsPerYear).toBe(12);
+  expect(result.keep.netInterest).toBeGreaterThan(
+    calculateDepositComparison(validInputs).keep.netInterest
+  );
+  expect(result.switch.newDeposit.netInterest).toBeGreaterThan(
+    calculateDepositComparison(validInputs).switch.newDeposit.netInterest
+  );
 });
 
 test("갈아타기 비용을 예상 수익에서 차감한다", () => {

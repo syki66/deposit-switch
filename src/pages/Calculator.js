@@ -14,6 +14,7 @@ const getToday = () => {
 
 const initialInputs = {
   amount: "",
+  interestType: "simple",
   switchDate: getToday(),
   oldStartDate: "",
   oldMaturityDate: "",
@@ -141,6 +142,42 @@ export default function Calculator() {
               <small className="field-help">예: 천만 원이면 10,000,000 입력</small>
               <FieldError>{errors.amount}</FieldError>
             </label>
+
+            <fieldset className="interest-type-field">
+              <legend>이자 계산 방식</legend>
+              <div className="interest-type-options">
+                <label>
+                  <input
+                    checked={inputs.interestType === "simple"}
+                    name="interestType"
+                    onChange={(event) =>
+                      updateInput(event.target.name, event.target.value)
+                    }
+                    type="radio"
+                    value="simple"
+                  />
+                  <span>
+                    <strong>단리</strong>
+                    <small>원금에만 이자가 붙어요.</small>
+                  </span>
+                </label>
+                <label>
+                  <input
+                    checked={inputs.interestType === "compound"}
+                    name="interestType"
+                    onChange={(event) =>
+                      updateInput(event.target.name, event.target.value)
+                    }
+                    type="radio"
+                    value="compound"
+                  />
+                  <span>
+                    <strong>복리 (월복리)</strong>
+                    <small>매월 발생한 이자에도 이자가 붙어요.</small>
+                  </span>
+                </label>
+              </div>
+            </fieldset>
           </div>
         </section>
 
@@ -311,7 +348,8 @@ export default function Calculator() {
         <div className="submit-area">
           <p>
             새 예금 이자는 가입 예정일부터 기존 예금 만기일까지 계산합니다.
-            실제 수령액은 은행 규정에 따라 달라질 수 있습니다.
+            복리는 월복리로 계산하며, 실제 수령액은 은행 규정에 따라 달라질
+            수 있습니다.
           </p>
           <button type="submit">계산 결과 크게 보기</button>
         </div>

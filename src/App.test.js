@@ -33,8 +33,34 @@ test("예금 비교 입력 화면을 표시한다", () => {
     screen.getByRole("heading", { name: "예금, 갈아타는 게 이득일까요?" })
   ).toBeInTheDocument();
   expect(calculateButton).toBeInTheDocument();
+  expect(screen.getByRole("radio", { name: /단리/ })).toBeChecked();
+  expect(screen.getByRole("radio", { name: /복리/ })).not.toBeChecked();
   expect(
     screen.getByText("© 2026 Pokugi Studio. All rights reserved.")
+  ).toBeInTheDocument();
+});
+
+test("복리를 선택해 계산 결과에 월복리 기준을 표시한다", () => {
+  const hash = createShareHash({
+    amount: "10000000",
+    interestType: "compound",
+    switchDate: "2026-07-02",
+    oldStartDate: "2026-01-01",
+    oldMaturityDate: "2027-01-01",
+    oldInterest: "3.5",
+    earlyTerminationInterest: "0.1",
+    oldTax: "15.4",
+    newInterest: "4.2",
+    newTax: "15.4",
+    switchingCost: "0",
+  });
+  window.history.pushState({}, "", `/${hash}`);
+
+  render(<App />);
+
+  expect(screen.getAllByText(/월복리/).length).toBeGreaterThan(0);
+  expect(
+    screen.getByText(/발생한 이자를 원금에 더해 다음 달 이자를 계산했습니다/)
   ).toBeInTheDocument();
 });
 

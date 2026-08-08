@@ -38,6 +38,9 @@ const toNumber = (value) => {
   return Number(String(value).replace(/,/g, ""));
 };
 
+const getInterestType = (value) =>
+  value === "compound" ? "compound" : "simple";
+
 const validateInputs = (inputs) => {
   const errors = {};
   const amount = toNumber(inputs.amount);
@@ -103,8 +106,18 @@ const validateInputs = (inputs) => {
   return errors;
 };
 
-const calculateInterest = ({ principal, annualRate, taxRate, days }) => {
-  const grossInterest = principal * (annualRate / 100) * (days / 365);
+const calculateInterest = ({
+  principal,
+  annualRate,
+  taxRate,
+  days,
+  interestType = "simple",
+}) => {
+  const rate = annualRate / 100;
+  const grossInterest =
+    interestType === "compound"
+      ? principal * (Math.pow(1 + rate / 12, (days / 365) * 12) - 1)
+      : principal * rate * (days / 365);
   const tax = grossInterest * (taxRate / 100);
 
   return {
@@ -122,6 +135,7 @@ const calculateDepositComparison = (inputs) => {
   }
 
   const principal = toNumber(inputs.amount);
+  const interestType = getInterestType(inputs.interestType);
   const fullDays = getDaysBetween(
     inputs.oldStartDate,
     inputs.oldMaturityDate
@@ -137,18 +151,21 @@ const calculateDepositComparison = (inputs) => {
     annualRate: toNumber(inputs.oldInterest),
     taxRate: toNumber(inputs.oldTax),
     days: fullDays,
+    interestType,
   });
   const earlyTermination = calculateInterest({
     principal,
     annualRate: toNumber(inputs.earlyTerminationInterest),
     taxRate: toNumber(inputs.oldTax),
     days: elapsedDays,
+    interestType,
   });
   const newDeposit = calculateInterest({
     principal,
     annualRate: toNumber(inputs.newInterest),
     taxRate: toNumber(inputs.newTax),
     days: remainingDays,
+    interestType,
   });
   const switchingCost = toNumber(inputs.switchingCost);
   const switchNetInterest =
@@ -163,6 +180,8 @@ const calculateDepositComparison = (inputs) => {
     errors: {},
     assumptions: {
       dayCountBasis: 365,
+      compoundingPeriodsPerYear: interestType === "compound" ? 12 : null,
+      interestType,
       fullDays,
       elapsedDays,
       remainingDays,

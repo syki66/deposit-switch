@@ -1,6 +1,8 @@
-const SHARE_PREFIX = "#share=v1.";
+const SHARE_PREFIX = "#share=v2.";
+const LEGACY_SHARE_PREFIX = "#share=v1.";
 const SHARE_FIELDS = [
   "amount",
+  "interestType",
   "switchDate",
   "oldStartDate",
   "oldMaturityDate",
@@ -31,25 +33,33 @@ const createShareHash = (inputs) => {
 };
 
 const readInputsFromShareHash = (hash) => {
-  if (!hash || !hash.startsWith(SHARE_PREFIX) || hash.length > 4096) {
+  const isCurrent = hash?.startsWith(SHARE_PREFIX);
+  const isLegacy = hash?.startsWith(LEGACY_SHARE_PREFIX);
+
+  if (!hash || (!isCurrent && !isLegacy) || hash.length > 4096) {
     return null;
   }
 
   try {
-    const values = JSON.parse(fromBase64Url(hash.slice(SHARE_PREFIX.length)));
+    const prefix = isCurrent ? SHARE_PREFIX : LEGACY_SHARE_PREFIX;
+    const fields = isCurrent
+      ? SHARE_FIELDS
+      : SHARE_FIELDS.filter((field) => field !== "interestType");
+    const values = JSON.parse(fromBase64Url(hash.slice(prefix.length)));
 
     if (
       !Array.isArray(values) ||
-      values.length !== SHARE_FIELDS.length ||
+      values.length !== fields.length ||
       values.some((value) => typeof value !== "string")
     ) {
       return null;
     }
 
-    return SHARE_FIELDS.reduce(
+    const inputs = fields.reduce(
       (inputs, field, index) => ({ ...inputs, [field]: values[index] }),
       {}
     );
+    return { ...inputs, interestType: inputs.interestType || "simple" };
   } catch {
     return null;
   }
