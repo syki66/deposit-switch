@@ -4,7 +4,13 @@ jest.mock(
   { virtual: true }
 );
 
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import {
+  act,
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+} from "@testing-library/react";
 import App from "./App";
 import { createShareHash } from "./utils/shareUrl";
 
@@ -62,6 +68,40 @@ test("복리를 선택해 계산 결과에 월복리 기준을 표시한다", ()
   expect(
     screen.getByText(/발생한 이자를 원금에 더해 다음 달 이자를 계산했습니다/)
   ).toBeInTheDocument();
+});
+
+test("없는 주소에는 404 페이지와 홈 이동 버튼을 표시한다", () => {
+  window.history.pushState({}, "", "/does-not-exist");
+
+  render(<App />);
+
+  expect(
+    screen.getByRole("heading", { name: "페이지를 찾을 수 없습니다." })
+  ).toBeInTheDocument();
+  expect(screen.getByText(/5초 후/)).toBeInTheDocument();
+
+  fireEvent.click(
+    screen.getByRole("button", { name: "계산 화면으로 이동" })
+  );
+
+  expect(
+    screen.getByRole("heading", { name: "예금, 갈아타는 게 이득일까요?" })
+  ).toBeInTheDocument();
+});
+
+test("404 페이지에서 5초 후 계산 화면으로 자동 이동한다", () => {
+  jest.useFakeTimers();
+  window.history.pushState({}, "", "/missing-page");
+
+  render(<App />);
+  act(() => {
+    jest.advanceTimersByTime(5000);
+  });
+
+  expect(
+    screen.getByRole("heading", { name: "예금, 갈아타는 게 이득일까요?" })
+  ).toBeInTheDocument();
+  jest.useRealTimers();
 });
 
 test("검증에 실패하면 첫 번째 오류 입력란으로 이동한다", async () => {

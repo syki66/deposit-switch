@@ -623,6 +623,66 @@ button {
   font-weight: 800;
 }
 
+.not-found-page {
+  display: grid;
+  min-height: 520px;
+  place-items: center;
+}
+
+.not-found-card {
+  width: min(100%, 680px);
+  padding: 54px 36px;
+  border: 2px solid #bdc8d3;
+  border-radius: 16px;
+  background: var(--white);
+  text-align: center;
+}
+
+.not-found-code {
+  margin: 0 0 10px;
+  color: var(--navy);
+  font-size: clamp(3.5rem, 10vw, 6rem);
+  font-weight: 900;
+  line-height: 1;
+}
+
+.not-found-card h1 {
+  margin: 0;
+  color: var(--navy-dark);
+  font-size: clamp(1.7rem, 5vw, 2.4rem);
+  font-weight: 900;
+  letter-spacing: -0.035em;
+}
+
+.not-found-card > p:not(.not-found-code) {
+  margin: 20px 0 28px;
+  color: var(--muted);
+  line-height: 1.8;
+}
+
+.not-found-card strong {
+  color: var(--navy);
+}
+
+.not-found-card button {
+  min-height: 58px;
+  padding: 14px 24px;
+  border: 2px solid var(--navy);
+  border-radius: 10px;
+  background: var(--navy);
+  color: var(--white);
+  font-weight: 900;
+}
+
+.not-found-card button:hover {
+  background: var(--navy-dark);
+}
+
+.not-found-card button:focus-visible {
+  outline: 4px solid var(--yellow);
+  outline-offset: 4px;
+}
+
 .site-footer {
   width: min(100% - 32px, 960px);
   margin: 0 auto;
@@ -670,6 +730,14 @@ button {
   .result-hero {
     padding: 22px 18px;
     border-radius: 12px;
+  }
+
+  .not-found-page {
+    min-height: 440px;
+  }
+
+  .not-found-card {
+    padding: 42px 18px;
   }
 
   .form-section,

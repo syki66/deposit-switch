@@ -8,6 +8,7 @@ import {
 } from "react-router-dom";
 import "./App.css";
 import Calculator from "./pages/Calculator";
+import NotFound from "./pages/NotFound";
 import Result from "./pages/Result";
 import { readInputsFromShareHash } from "./utils/shareUrl";
 
@@ -46,6 +47,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/result" element={<Result />} />
+        <Route path="*" element={<NotFound />} />
       </Routes>
       <footer className="site-footer">
         <p className="site-footer__copyright">
