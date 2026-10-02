@@ -17,6 +17,11 @@ function Home() {
   return readInputsFromShareHash(location.hash) ? <Result /> : <Calculator />;
 }
 
+export const getProductsUrl = (hostname) =>
+  hostname === "pokugi.com" || hostname.endsWith(".pokugi.com")
+    ? "https://go.pokugi.com"
+    : "https://gorilla-best.vercel.app";
+
 const removeSharedInputs = (event) => ({
   ...event,
   url: event.url.split("#")[0],
@@ -30,7 +35,10 @@ function App() {
           <Link className="site-header__brand" to="/">
             예금 갈아탈까?
           </Link>
-          <a className="site-header__products" href="https://pokugi.com">
+          <a
+            className="site-header__products"
+            href={getProductsUrl(window.location.hostname)}
+          >
             다른 제품 보러가기
           </a>
         </div>

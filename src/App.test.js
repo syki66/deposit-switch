@@ -11,7 +11,7 @@ import {
   screen,
   waitFor,
 } from "@testing-library/react";
-import App from "./App";
+import App, { getProductsUrl } from "./App";
 import { createShareHash } from "./utils/shareUrl";
 
 beforeEach(() => {
@@ -34,7 +34,7 @@ test("예금 비교 입력 화면을 표시한다", () => {
   ).toBe(adBanner);
   expect(
     screen.getByRole("link", { name: "다른 제품 보러가기" })
-  ).toHaveAttribute("href", "https://pokugi.com");
+  ).toHaveAttribute("href", "https://gorilla-best.vercel.app");
   expect(
     screen.getByRole("heading", { name: "예금, 갈아타는 게 이득일까요?" })
   ).toBeInTheDocument();
@@ -44,6 +44,17 @@ test("예금 비교 입력 화면을 표시한다", () => {
   expect(
     screen.getByText("© 2026 Pokugi Studio. All rights reserved.")
   ).toBeInTheDocument();
+});
+
+test("pokugi 도메인일 때만 다른 제품 링크를 go.pokugi.com으로 연결한다", () => {
+  expect(getProductsUrl("deposit.pokugi.com")).toBe("https://go.pokugi.com");
+  expect(getProductsUrl("pokugi.com")).toBe("https://go.pokugi.com");
+  expect(getProductsUrl("deposit-switch.vercel.app")).toBe(
+    "https://gorilla-best.vercel.app"
+  );
+  expect(getProductsUrl("notpokugi.com")).toBe(
+    "https://gorilla-best.vercel.app"
+  );
 });
 
 test("복리를 선택해 계산 결과에 월복리 기준을 표시한다", () => {
